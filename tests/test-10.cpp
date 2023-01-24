@@ -1,6 +1,7 @@
 #include <PlushStore.hpp>
 
 #include <catch2/catch_test_macros.hpp>
+#include <iostream>
 
 TEST_CASE("Test 10 - "
           "Lorsqu'ils produisent des peluches, les magasins gagnent de l'experience.")
@@ -32,6 +33,7 @@ TEST_CASE("Test 10 - "
     
     const auto value_3 = plush_store.make_plush(20);
     REQUIRE(value_3 >= 10);
+
 }
 
 TEST_CASE("Test 10 - "

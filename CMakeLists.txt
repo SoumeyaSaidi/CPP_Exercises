@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.18)
 project(CPP_Exercices)
 
 add_subdirectory(extern/Catch2)
@@ -7,6 +7,17 @@ include(Catch)
 
 add_executable(test-00
     tests/test-00.cpp
+)
+
+add_executable(testrr
+    src/test.cpp
+)
+
+target_compile_features(testrr PRIVATE cxx_std_17)
+target_compile_options(testrr PRIVATE
+	-Wall
+	-Wextra
+	-Werror
 )
 
 set(all_tests ${all_tests} test-00)
