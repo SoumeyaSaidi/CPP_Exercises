@@ -2,12 +2,11 @@
 
 #include <string>
 #include <algorithm>
-#include <vector>
-#include <optional>
-#include <iostream>
+#include <set>
 #include "Plush.hpp"
 
 class PlushStore {
+
 public:
     PlushStore(const std::string& name)
     : _name{name}
@@ -20,62 +19,41 @@ public:
     unsigned int get_experience() const { return _experience; }
 
     void loan(unsigned int amount) {
-        _debt_amount += (amount + amount/10);
         _wealth_amount += amount;
+        _debt_amount += (amount * 1.1);
     }
 
     unsigned int make_plush(unsigned int amount) {
         if(_wealth_amount > 0) {
-            auto invested = std::min(amount, _wealth_amount);
-            auto value = invested + std::max(_experience, _experience * invested / 100);
+            auto price = std::min(_wealth_amount, amount);
+            auto finalValue = price + std::max(_experience, _experience * price / 100);
 
-            _stock_size ++;
-            _experience ++;
-
-            _wealth_amount -= invested;
-
-            _plushes.emplace_back(Plush{invested});
-            
-            return value;
+            _experience++;
+            _wealth_amount -= price;
+            _stock_size++;
+            _plushes.emplace(finalValue);
+            return finalValue;
         }
         return 0;
     }
 
     std::optional<Plush> buy(unsigned int amount) {
-        
-        std::optional<Plush> opt = std::nullopt;
-        auto iterator = _plushes.begin();
-        for(auto it = _plushes.begin() ; it != _plushes.end() ; it++) {
-            auto p = *it;
-            if(p.get_cost() <= amount && (opt == std::nullopt || p.get_cost() > opt.value().get_cost())) {
-                opt = p;
-                iterator = it;
-                std::cout << p.get_cost() << std::endl;
+        for(const auto& plush : _plushes) {
+            if(plush.get_cost() <= amount) {
+                _plushes.erase(plush);
+                _stock_size--;
+                _wealth_amount += plush.get_cost();
+                return std::optional{plush};
             }
         }
-        if(opt != std::nullopt) {
-            _plushes.erase(iterator);
-        }
-        return opt;
+        return std::nullopt;
     }
 
 private:
-    std::string _name;
-    unsigned int _wealth_amount = 0;
-    unsigned int _stock_size = 0;
-    std::vector<Plush> _plushes;
-    unsigned int _debt_amount = 0;
-    unsigned int _experience = 0;
+    const std::string _name;
+    unsigned int _wealth_amount = 0u;
+    unsigned int _stock_size = 0u;
+    unsigned int _debt_amount = 0u;
+    unsigned int _experience = 0u;
+    std::set<Plush> _plushes;
 };
-
-/*
-qualité du code :
-=> copies inutiles
-=> const ref etc 
-
-exercices indépendants :
-
-1 er exercice : vector
-2eme exercice : map
-3eme exercice : string (+ classe)
-*/

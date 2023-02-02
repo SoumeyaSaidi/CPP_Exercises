@@ -1,9 +1,9 @@
 #pragma once
 
 #include <string>
-#include <iostream>
-#include "PlushStore.hpp"
+#include <ostream>
 #include <optional>
+#include "PlushStore.hpp"
 
 class Kid {
 
